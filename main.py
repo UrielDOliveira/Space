@@ -20,6 +20,12 @@ pygame.mixer.init()
 pygame.mixer.music.play(-1)
 pygame.display.set_icon(icone)
 
+def desenhar_linhas():
+    for i in range(len(estrelas) - 1):
+        ponto1 = estrelas[i][1]
+        ponto2 = estrelas[i + 1][1]
+        pygame.draw.line(janela, BRANCO, ponto1, ponto2, 2)
+
 while executando:
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:
@@ -35,6 +41,8 @@ while executando:
                 executando = False
 
     janela.blit(fundo, (0, 0))  # Desenha a imagem de fundo
+
+    desenhar_linhas()
 
     for nome, posicao in estrelas:
         pygame.draw.circle(janela, BRANCO, posicao, 10)
