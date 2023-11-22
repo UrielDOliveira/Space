@@ -1,5 +1,6 @@
 import pygame
 from tkinter import simpledialog
+import pickle
 
 pygame.init()
 
@@ -26,6 +27,25 @@ def desenhar_linhas():
         ponto2 = estrelas[i + 1][1]
         pygame.draw.line(janela, BRANCO, ponto1, ponto2, 2)
 
+def salvar_marcacoes():
+    with open("marcacoes.pkl", "wb") as arquivo:
+        pickle.dump(estrelas, arquivo)
+    print("Marcações salvas com sucesso!")
+
+def carregar_marcacoes():
+    global estrelas
+    try:
+        with open("marcacoes.pkl", "rb") as arquivo:
+            estrelas = pickle.load(arquivo)
+        print("Marcações carregadas com sucesso!")
+    except FileNotFoundError:
+        print("Não há marcações salvas.")
+
+def excluir_marcacoes():
+    global estrelas
+    estrelas = []
+    print("Todas as marcações foram excluídas.")
+
 while executando:
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:
@@ -39,6 +59,12 @@ while executando:
         elif evento.type == pygame.KEYDOWN:
             if evento.key == pygame.K_ESCAPE:
                 executando = False
+            elif evento.key == pygame.K_F10:
+                salvar_marcacoes()
+            elif evento.key == pygame.K_F11:
+                carregar_marcacoes()
+            elif evento.key == pygame.K_F12:
+                excluir_marcacoes()
 
     janela.blit(fundo, (0, 0))  # Desenha a imagem de fundo
 
@@ -51,7 +77,15 @@ while executando:
         posicao_texto = texto_surface.get_rect(center=(posicao[0], posicao[1] - 20))
         janela.blit(texto_surface, posicao_texto)  # Desenha o nome da estrela
 
+    # Opções de salvar, carregar e excluir marcações
+    texto_salvar = fonte.render("F10 - Salvar marcações", True, BRANCO)
+    texto_carregar = fonte.render("F11 - Carregar marcações", True, BRANCO)
+    texto_excluir = fonte.render("F12 - Excluir marcações", True, BRANCO)
+
+    janela.blit(texto_salvar, (10, 10))
+    janela.blit(texto_carregar, (10, 40))
+    janela.blit(texto_excluir, (10, 70))
+
     pygame.display.update()
 
-pygame.mixer.music.stop()
 pygame.quit()
